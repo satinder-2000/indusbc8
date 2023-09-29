@@ -1,0 +1,99 @@
+<ui:composition xmlns:faces="javax.faces"
+                xmlns:ui="javax.faces.facelets"
+                xmlns:f="javax.faces.core"
+                xmlns:h="javax.faces.html"
+                xmlns:pt="javax.faces.passthrough"
+                template="/WEB-INF/template/indusbcTemplate.xhtml"
+                >
+
+    <ui:define name="content">
+        <div class="container col-sm-8">
+            <h1>#{msg.expensePartyRegister}</h1>
+            <h:form styleClass="form-horizontal" prependId="false">
+                <h:messages id="messages" infoStyle="color:blue;margin:5px;" errorStyle="color:red;margin:5px;"/>
+                <br/>
+                <div class="row form-group">
+                    <div class="col-sm-6">
+                        <h:outputLabel for="name" value="#{msg.name}"/>
+                    </div>
+                    <div class="col-sm-6">
+                        <h:inputText id="name" value="#{expensePartyRegisterMBean.expenseParty.name}" pt:placeholder="2 to 45 chars" styleClass="form-control"/>
+                    </div>
+                </div>
+                <br/>
+                <div class="row form-group">
+                    <div class="col-sm-6">
+                        <h:outputLabel for="email" value="#{msg.email}"/>
+                    </div>
+                    <div class="col-sm-6">
+                        <h:inputText id="email" value="#{expensePartyRegisterMBean.expenseParty.email}" styleClass="form-control"/>
+                    </div>
+                </div>
+                <br/>
+                <div class="row form-group">
+                    <div class="col-sm-6">
+                        <label for="idType">#{msg.identityType}</label>
+                    </div>
+                    <div class="col-sm-6">
+                        <h:selectOneMenu id="idType" value="#{expensePartyRegisterMBean.expenseParty.identityType}" styleClass="form-control">
+                            <f:selectItems value="#{expensePartyRegisterMBean.identityTypesStr}" var="it" itemValue="#{it}" itemlabel="#{it}"/>
+                        </h:selectOneMenu>
+                    </div>
+                </div>
+                <br/>
+                <div class="row form-group">
+                    <div class="col">
+                        <label for="identityId">#{msg.identityId}</label>
+                    </div>
+                    <div class="col">
+                        <h:inputText id="identityId" value="#{expensePartyRegisterMBean.expenseParty.identityId}" styleClass="form-control"/>
+                    </div>
+                </div>
+                <br/>
+                <div class="row form-group">
+                    <div class="col-sm-6">
+                        <h:outputLabel for="orgn" value="#{msg.organisation}"/>
+                    </div>
+                    <div class="col-sm-6">
+                        <h:inputText id="orgn" value="#{expensePartyRegisterMBean.expenseParty.organisation}" styleClass="form-control"/>
+                    </div>
+                </div>
+                <br/>
+                <div class="row form-group">
+                    <div class="col-sm-6">
+                        <h:outputLabel for="expCats" value="#{msg.selectAccounts}"/>
+                    </div>
+                    <div class="col-sm-6">
+                        <h:selectManyListbox id="expCats" value="#{expensePartyRegisterMBean.partyExpenseCategories}" size="5" styleClass="form-control">
+                            <f:selectItems value="#{expensePartyRegisterMBean.expenseCategoriesStr}" var="eC" itemLabel="#{eC}" itemValue="#{eC}"/>
+                        </h:selectManyListbox>
+                    </div>
+                </div>
+                <br/>
+                <div class="row form-group">
+                    <div class="col-sm-6">
+                        <h:outputLabel for="memDt" value="#{msg.memorableDate}"/>
+                    </div>
+                    <div class="col-sm-6">
+                        <h:inputText id="memDate" value="#{expensePartyRegisterMBean.memorableDateStr}" pt:placeholder="DD/MM/YYYY" styleClass="form-control" />
+                    </div>
+                </div>
+                <br/>
+                <div class="row form-group">
+                    <div class="col-sm-6">
+                        <h:outputLabel value=""/>
+                    </div>
+                    <div class="col-sm-6">
+                        <h:commandButton id="continueBtn" value="#{msg.continue}" action="#{expensePartyRegisterMBean.validateExpenseParty()}" styleClass="btn btn-primary" ></h:commandButton>
+                        
+                    </div>
+                </div>
+                
+            </h:form>
+            <br/>
+            
+            
+        </div>
+    </ui:define>
+
+</ui:composition>

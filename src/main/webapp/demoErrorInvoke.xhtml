@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:faces="javax.faces"
+    xmlns:ui="javax.faces.facelets"
+    xmlns:f="javax.faces.core"
+    xmlns:h="javax.faces.html"
+    xmlns:pt="javax.faces.passthrough"
+    xmlns:cc="javax.faces.composite"
+    xmlns:my="javax.faces.component"
+    xmlns:c="javax.tags.core"
+    xmlns:fn="javax.tags.functions">
+    
+<h:body>
+
+    <h2>JSF Global exception handler factory example</h2>
+
+    <h:form>
+        <h:commandButton value="throw an error" actionListener="#{errorMBean.throwContextNotActiveException}"/>
+    </h:form>
+
+</h:body>
+        
+</html>

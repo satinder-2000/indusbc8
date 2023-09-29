@@ -1,0 +1,59 @@
+<ui:composition xmlns:faces="javax.faces"
+                xmlns:ui="javax.faces.facelets"
+                xmlns:f="javax.faces.core"
+                xmlns:h="javax.faces.html"
+                template="/WEB-INF/template/template/indusbcTemplate.xhtml">
+
+    <ui:define name="content">
+            <div class="container col-sm-8">
+                <h1>#{msg.accessCreate}</h1>
+           
+                <h6 class="text-center"><small style="color: blue;">#{msg.passwordInfo}</small></h6>
+            <h:form styleClass="form-horizontal">
+                <h:messages infoStyle="color:blue;margin:5px;" errorStyle="color:red;margin:5px;"/>
+                <div class=" row form-group">
+                    <div class="col-sm-5">
+                        <label for="email">#{msg.email}</label>
+                    </div>
+                    <div class="col-sm-5">
+                        <h:outputText id="email" value="#{accessCreateMBean.access.email}" styleClass="form-control"/>
+                    </div>
+                </div>
+                <br/>
+                <div class=" row form-group">
+                    <div class="col-sm-5">
+                        <label for="password">#{msg.password}</label>
+                    </div>
+                    <div class="col-sm-5">
+                        <h:inputSecret id="password" value="#{accessCreateMBean.access.password}" styleClass="form-control"/>
+                    </div>
+                </div>
+                <br/>
+                <div class=" row form-group">
+                    <div class="col-sm-5">
+                        <label for="passwordConfirm">#{msg.passwordConfirm}</label>
+                    </div>
+                    <div class="col-sm-5">
+                        <h:inputSecret id="passwordConfirm" value="#{accessCreateMBean.access.passwordConfirm}" styleClass="form-control"/>
+                    </div>
+                </div>
+                <br/>
+                <div class=" row form-group">
+                    <div class="col-sm-5">
+                        <h:outputText/>
+                    </div>
+                    <div class="col-sm-5">
+                        <h:commandButton value="#{msg.continue}" action="#{accessCreateMBean.processForm}" styleClass="btn btn-primary">
+                            <f:ajax execute="@form" render="@form" />
+                        </h:commandButton>
+                    </div>
+                </div>
+                
+            </h:form>
+         </div>
+        
+        
+            
+    </ui:define>
+
+</ui:composition>

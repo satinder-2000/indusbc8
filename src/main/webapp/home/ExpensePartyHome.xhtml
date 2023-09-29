@@ -1,0 +1,64 @@
+<ui:composition xmlns:faces="javax.faces"
+                xmlns:ui="javax.faces.facelets"
+                xmlns:f="javax.faces.core"
+                xmlns:h="javax.faces.html"
+                template="/WEB-INF/template/indusbcTemplate.xhtml"
+                >
+
+    <ui:define name="content">
+        <div class="container col-sm-8">
+            <h2>Expense Party Home</h2>
+            <h6>Select from your Accounts below to operate in:</h6>
+            <br/>
+            <div class="row">
+                <div class="col-sm-3"><b><h:outputLabel value="A/C Name"/></b></div>
+                <div class="col-sm-3"><b><h:outputLabel value="YTD Balance"/></b></div>
+                <div class="col-sm-3"><b><h:outputLabel value="Money In"/></b></div>
+                <div class="col-sm-3"><b><h:outputLabel value="Money Out"/></b></div>
+            </div>
+            <h:form>
+                <div class="row">
+                    <div class="col-sm-3"><h:outputLabel value=""/></div>
+                    <div class="col-sm-6">
+                        <div class="alert alert-warning alert-dismissible">
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            <strong>Warning!</strong> Money Out limit is YTD Balance.
+                        </div>
+                    </div>
+                    <div class="col-sm-3"><h:outputLabel value=""/></div>
+                </div>
+                <h:messages id="messages" infoStyle="color:blue;margin:5px;" errorStyle="color:red;margin:5px;"/>
+                <ui:repeat value="#{expensePartyActionsMBean.expenseParty.expenseAccounts}" var="ea">
+                    <div class="row">
+                        <div class="col-sm-3"><h:outputLabel value="#{ea.name}"/></div>
+                        <div class="col-sm-3"><h:outputLabel value="#{ea.ytdBalance}"/></div>
+                        <div class="col-sm-3"><h:inputText value="#{ea.moneyIn}" size="5"/></div>
+                        <div class="col-sm-3"><h:inputText value="#{ea.moneyOut}" size="5"/></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3"><h:outputLabel value=""/></div>
+                        <div class="col-sm-3"><h:outputLabel value=""/></div>
+                        <div class="col-sm-6">
+                            <h:link value="View all Transactions" outcome="#{request.contextPath}/trans/ExpenseAccountTransactions">
+                                <f:param name="acctId" value="#{ea.id}"/>
+                            </h:link>
+                        </div>
+                    </div>
+                </ui:repeat>
+                <div class="row">
+                    <div class="col-sm-3"><h:outputLabel value=""/></div>
+                    <div class="col-sm-3"><h:outputLabel value=""/></div>
+                    <div class="col-sm-3"><h:outputLabel value=""/></div>
+                    <div class="col-sm-3">
+
+                        <h:commandButton value="Process" styleClass="btn btn-primary">
+                            <f:ajax execute="@form" render="@form" listener="#{expensePartyActionsMBean.ajaxTypeListener}"/>
+                        </h:commandButton>
+                    </div>
+                </div>
+
+            </h:form>
+            <br/>    
+        </div>
+    </ui:define>
+</ui:composition>

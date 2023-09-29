@@ -1,0 +1,26 @@
+<ui:composition xmlns:faces="javax.faces"
+                xmlns:ui="javax.faces.facelets"
+                xmlns:f="javax.faces.core"
+                xmlns:h="javax.faces.html"
+                template="/WEB-INF/template/indusbcTemplate.xhtml"
+                >
+
+    <ui:define name="content">
+        <div class="container col-sm-8">
+            <h1>#{msg.registration}</h1>
+            <div class="row">
+                <h6>#{msg.successRegisterMessage}</h6>
+            </div>
+            <br/>
+            <div class="row">
+                <div class="col-sm-6"></div>
+
+                <div class="col-sm-6">
+                    <h:outputLink value="#{request.contextPath}/login.xhtml" styleClass="btn btn-primary">#{msg.login}</h:outputLink>
+
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

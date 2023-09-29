@@ -1,0 +1,15 @@
+<ui:composition xmlns:faces="javax.faces"
+                xmlns:h="javax.faces.html"
+                xmlns:ui="javax.faces.facelets"
+                template="/WEB-INF/template/indusbcTemplate.xhtml">
+    <ui:define name="content">
+        <div class="container col-sm-8">
+            <h1>#{msg.loggedOut}</h1>
+            <p>you have logged out successfully!!</p>
+            <h:outputLink value="#{request.contextPath}/index.xhtml" styleClass="btn btn-primary">
+                #{msg.home}
+            </h:outputLink>
+        </div>
+    </ui:define>
+
+</ui:composition>

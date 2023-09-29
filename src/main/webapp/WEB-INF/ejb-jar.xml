@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+        version="3.2"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/ejb-jar_3_2.xsd">
+    
+    <enterprise-beans>
+        <session>
+            <display-name>EmailerEjb</display-name>
+            <ejb-name>EmailerEjb</ejb-name>
+            <ejb-class>org.indusbc.ejb.EmailerEjb</ejb-class>
+            <env-entry>
+                <env-entry-name>sender</env-entry-name>
+                <env-entry-type>java.lang.String</env-entry-type>
+                <env-entry-value>ssingh.2023@gmail.com</env-entry-value>
+            </env-entry>
+            <env-entry>
+                <env-entry-name>WebURI</env-entry-name>
+                <env-entry-type>java.lang.String</env-entry-type>
+                <env-entry-value>http://localhost:8080/indusbcWar/</env-entry-value>
+            </env-entry>
+           
+            
+            <env-entry>
+                <env-entry-name>accessCreateURI</env-entry-name>
+                <env-entry-type>java.lang.String</env-entry-type>
+                <env-entry-value>AccessCreate.xhtml?email=</env-entry-value>
+            </env-entry>
+            
+             <env-entry>
+                <env-entry-name>loginURI</env-entry-name>
+                <env-entry-type>java.lang.String</env-entry-type>
+                <env-entry-value>login.xhtml</env-entry-value>
+            </env-entry>
+            <env-entry>
+                <env-entry-name>surveyURI</env-entry-name>
+                <env-entry-type>java.lang.String</env-entry-type>
+                <env-entry-value>survey/SurveyDetails.xhtml?surveyId=</env-entry-value>
+            </env-entry>
+            <env-entry>
+                <env-entry-name>forumURI</env-entry-name>
+                <env-entry-type>java.lang.String</env-entry-type>
+                <env-entry-value>forum/ForumDetails.xhtml?forumId=</env-entry-value>
+            </env-entry>
+            <env-entry>
+                <env-entry-name>passwordResetURI</env-entry-name>
+                <env-entry-type>java.lang.String</env-entry-type>
+                <env-entry-value>home/AccessReset.xhtml</env-entry-value>
+            </env-entry>
+        </session>
+    </enterprise-beans>
+
+</ejb-jar>
