@@ -1,5 +1,6 @@
 package org.indusbc.model;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
@@ -13,7 +14,7 @@ import javax.persistence.Transient;
 
 @Entity
 @Table(name = "REVENUE_ACCOUNT")
-public class RevenueAccount {
+public class RevenueAccount implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

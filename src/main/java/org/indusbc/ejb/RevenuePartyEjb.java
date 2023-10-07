@@ -11,11 +11,13 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.indusbc.ejb.exception.UserRegisteredAlreadyException;
 import org.indusbc.model.Access;
 import org.indusbc.model.RevenueAccount;
+import org.indusbc.model.RevenueCategory;
 import org.indusbc.model.RevenueParty;
+import org.indusbc.util.FinancialYear;
 import org.indusbc.util.HashGenerator;
 
 /**
@@ -31,33 +33,34 @@ public class RevenuePartyEjb implements RevenuePartyEjbLocal {
     private EntityManager em;
     
     @Inject
-    RevenueAccountEjbLocal ral;
+    private RevenueCategoryEjbLocal revenueCategoryEjbLocal;
+    @Inject
+    RevenueAccountEjbLocal revenueAccountEjbLocal;
     
     @Inject
-    EmailerEjbLocal eel;
+    EmailerEjbLocal emailerEjbLocal;
     
     @Inject
-    private AccessEjbLocal ael;
+    private AccessEjbLocal accessEjbLocal;
 
     @Override
-    public RevenueParty createRevenueParty(RevenueParty revenueParty) throws UserRegisteredAlreadyException, MessagingException {
-        String[] revAcctHashes = new String[revenueParty.getRevenueAccounts().size()];
-        for (int i=0; i<revenueParty.getRevenueAccounts().size(); i++ ) {
-		RevenueAccount ra = revenueParty.getRevenueAccounts().get(i);
-		revAcctHashes[i]=ra.getRevenueAccountHash();
-	}
+    public RevenueParty createRevenueParty(RevenueParty revenueParty, List<String> partyRevenueCategoriesList) throws MessagingException {
         em.persist(revenueParty);
         em.flush();
-        LOGGER.info(String.format("Revenue Party created with ID: %d",revenueParty.getId()));
-        for(RevenueAccount ra : revenueParty.getRevenueAccounts()){
+        //Create RevenuePartyAccounts
+        for (String revCat : partyRevenueCategoriesList) {
+            RevenueAccount ra = new RevenueAccount();
+            ra.setRevenueAccountHash(HashGenerator.generateHash(revCat));
+            ra.setName(revCat);
+            RevenueCategory rc = revenueCategoryEjbLocal.findByNameAndYear(revCat, FinancialYear.financialYear());
+            ra.setRevenueCategoryId(rc.getId());
             ra.setRevenuePartyId(revenueParty.getId());
-            ra.setCreatedOn(new Timestamp(System.currentTimeMillis()));
-            ral.createRevenueAccount(ra);
+            ra = revenueAccountEjbLocal.createRevenueAccount(ra);
+            LOGGER.log(Level.INFO, "Revenue Account persisted with ID: {0} ", ra.getId());
         }
-        LOGGER.info(String.format("%d Revenue Accounts updated with RevenueParty Id %d",revenueParty.getRevenueAccounts().size(),revenueParty.getId()));
         //Create Acccess record now.
-        Access access= ael.createRevenuePartyAccess(revenueParty);
-        LOGGER.info(String.format("Access ID for the Revenue Party %d is %d",revenueParty.getId(),access.getId()));
+        Access access = accessEjbLocal.createRevenuePartyAccess(revenueParty);
+        LOGGER.info(String.format("Access ID for the Revenue Party %d is %d", revenueParty.getId(), access.getId()));
         return revenueParty;
     }
 

@@ -14,7 +14,7 @@ import org.indusbc.model.ExpenseParty;
 @Local
 public interface ExpensePartyEjbLocal {
     
-    public ExpenseParty createExpenseParty(ExpenseParty expenseParty) throws UserRegisteredAlreadyException, MessagingException;
+    public ExpenseParty createExpenseParty(ExpenseParty expenseParty, List<String> partyExpenseCategoriesList) throws MessagingException;
     public ExpenseParty findById(int id);
     public ExpenseParty updateExpenseParty(ExpenseParty expenseParty);
     public List<ExpenseAccount> findExpenseAccountsOfParty(String email);

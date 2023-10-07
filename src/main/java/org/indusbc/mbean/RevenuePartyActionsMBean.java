@@ -49,14 +49,14 @@ public class RevenuePartyActionsMBean implements Serializable {
         Access access = (Access) session.getAttribute(IndusConstants.ACCESS);
         assert (access.getAccessType().equals(AccessType.REVENUE_PARTY.toString()));
         revenueParty = revenuePartyEjbLocal.findByEmail(access.getEmail());
-        LOGGER.info(String.format("RevenueParty with ID %d initialised with %d Revenue Accounts", revenueParty.getId(),
-                revenueParty.getRevenueAccounts().size()));
+        //LOGGER.info(String.format("RevenueParty with ID %d initialised with %d Revenue Accounts", revenueParty.getId(),
+        //        revenueParty.getRevenueAccounts().size()));
 
     }
 
     public void ajaxTypeListener(AjaxBehaviorEvent event) {
         LOGGER.info("AJAX invoked.");
-        List<RevenueAccount> partyAccounts = revenueParty.getRevenueAccounts();
+        /*List<RevenueAccount> partyAccounts = revenueParty.getRevenueAccounts();
         for (RevenueAccount ra : partyAccounts) {
             if (!ra.getMoneyIn().isEmpty() && (new BigDecimal(ra.getMoneyIn()).compareTo(new BigDecimal("0")) == 1)) {
                 RevenueAccountTransaction rat = new RevenueAccountTransaction();
@@ -91,7 +91,7 @@ public class RevenuePartyActionsMBean implements Serializable {
 
             }
 
-        }
+        }*/
     }
 
     public RevenueParty getRevenueParty() {

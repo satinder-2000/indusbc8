@@ -2,7 +2,6 @@ package org.indusbc.mbean;
 
 import org.indusbc.ejb.RevenueCategoryEjbLocal;
 import org.indusbc.ejb.RevenuePartyEjbLocal;
-import org.indusbc.ejb.exception.UserRegisteredAlreadyException;
 import org.indusbc.model.RevenueAccount;
 import org.indusbc.model.RevenueCategory;
 import org.indusbc.model.RevenueParty;
@@ -20,6 +19,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.indusbc.ejb.IdentityTypeEjbLocal;
+import org.indusbc.ejb.RevenueAccountEjbLocal;
 import org.indusbc.model.IdentityType;
 
 /**
@@ -40,11 +41,9 @@ public class RevenuePartyRegisterMBean implements Serializable {
     private static final Logger LOGGER=Logger.getLogger(RevenuePartyRegisterMBean.class.getName());
     private RevenueParty revenueParty;
     private List<RevenueCategory> revenueCategories;
-    private List<String> revenueCategoriesStr;
     private String[] partyRevenueCategories;
     private String memorableDateStr;
     private List<IdentityType> identityTypes;
-    private List<String> identityTypesStr;
     
     
     @Inject
@@ -52,22 +51,17 @@ public class RevenuePartyRegisterMBean implements Serializable {
     @Inject
     private RevenuePartyEjbLocal revenuePartyEjbLocal;
     @Inject
+    private RevenueAccountEjbLocal revenueAccountEjbLocal;
+    @Inject
     private IdentityTypeEjbLocal identityTypeEjbLocal;
     
     @PostConstruct
     public void init(){
         revenueParty=new RevenueParty();
         revenueCategories=new ArrayList<>();
-        revenueCategoriesStr= new ArrayList<>();
         revenueCategories.addAll(revenueCategoryEjbLocal.getRevenueCategoriesForYear(FinancialYear.financialYear()));
-        for (RevenueCategory rc: revenueCategories){
-           revenueCategoriesStr.add(rc.getRevenueCategory());
-        }
+        LOGGER.info(String.format("Total RevenueCategories for year %d are %d",FinancialYear.financialYear(), revenueCategories.size()));
         identityTypes=identityTypeEjbLocal.findAll();
-        identityTypesStr=new ArrayList();
-        for (IdentityType idT: identityTypes){
-            identityTypesStr.add(idT.getIdentityType());
-        }
         LOGGER.info("New Revenue Party initialised");
     }
     
@@ -109,20 +103,6 @@ public class RevenuePartyRegisterMBean implements Serializable {
             revenueParty.setMemorableDate(LocalDate.parse(memorableDateStr, formatter));
         }
         
-        //Create RevenuePartyAccounts
-        for(String revCat : partyRevenueCategories){
-            RevenueAccount ra= new RevenueAccount();
-            ra.setRevenueAccountHash(HashGenerator.generateHash(revCat));
-            ra.setName(revCat);
-            RevenueCategory rc=revenueCategoryEjbLocal.findByNameAndYear(revCat, FinancialYear.financialYear());
-            ra.setRevenueCategoryId(rc.getId());
-            //Will attach the RevenueParty Id in the EJB, when the ID becomes available.
-            if (revenueParty.getRevenueAccounts()==null){
-                revenueParty.setRevenueAccounts(new ArrayList<>());
-            }
-            revenueParty.getRevenueAccounts().add(ra);
-        }
-        
         //finally create PartyHash
         String partyHash=HashGenerator.generateHash(revenueParty.getName().concat(revenueParty.getEmail()).concat(revenueParty.getIdentityType()).concat(revenueParty.getIdentityId()));
 	revenueParty.setPartyHash(partyHash);
@@ -147,14 +127,17 @@ public class RevenuePartyRegisterMBean implements Serializable {
     }
     
     public void submitRevenueParty(){
+        
+        List<String> partyRevenueCategoriesList= Arrays.asList(partyRevenueCategories);
+        
+        
         try {
-            revenueParty = revenuePartyEjbLocal.createRevenueParty(revenueParty);
-        } catch (UserRegisteredAlreadyException ex) {
-            Logger.getLogger(RevenuePartyRegisterMBean.class.getName()).log(Level.SEVERE, null, ex);
+            revenueParty = revenuePartyEjbLocal.createRevenueParty(revenueParty,partyRevenueCategoriesList);
+            LOGGER.log(Level.INFO, "Revenue Party persisted with ID: {0} ",revenueParty.getId());
         } catch (MessagingException ex) {
             Logger.getLogger(RevenuePartyRegisterMBean.class.getName()).log(Level.SEVERE, null, ex);
         }
-        LOGGER.log(Level.INFO, "Revenue Party persisted with ID: {0} ",revenueParty.getId());
+        
     }
     
     public String getReturnValue() {
@@ -194,16 +177,6 @@ public class RevenuePartyRegisterMBean implements Serializable {
         this.memorableDateStr = memorableDateStr;
     }
 
-    
-
-    public List<String> getRevenueCategoriesStr() {
-        return revenueCategoriesStr;
-    }
-
-    public void setRevenueCategoriesStr(List<String> revenueCategoriesStr) {
-        this.revenueCategoriesStr = revenueCategoriesStr;
-    }
-
     public List<IdentityType> getIdentityTypes() {
         return identityTypes;
     }
@@ -212,12 +185,4 @@ public class RevenuePartyRegisterMBean implements Serializable {
         this.identityTypes = identityTypes;
     }
 
-    public List<String> getIdentityTypesStr() {
-        return identityTypesStr;
-    }
-
-    public void setIdentityTypesStr(List<String> identityTypesStr) {
-        this.identityTypesStr = identityTypesStr;
-    }
-    
 }

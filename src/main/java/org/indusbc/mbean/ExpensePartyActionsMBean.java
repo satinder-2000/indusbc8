@@ -49,12 +49,12 @@ public class ExpensePartyActionsMBean implements Serializable{
         Access access = (Access) session.getAttribute(IndusConstants.ACCESS);
         assert(access.getAccessType().equals(AccessType.EXPENSE_PARTY));
         expenseParty = expensePartyEjbLocal.findByEmail(access.getEmail());
-        LOGGER.info(String.format("ExpenseParty with ID %d initialise with %d Expense Accounts",expenseParty.getId(),
-                            expenseParty.getExpenseAccounts().size()));
+        //LOGGER.info(String.format("ExpenseParty with ID %d initialise with %d Expense Accounts",expenseParty.getId(),
+        //                    expenseParty.getExpenseAccounts().size()));
     }
     
     public void ajaxTypeListener(AjaxBehaviorEvent event) {
-        List<ExpenseAccount> partyAccounts = expenseParty.getExpenseAccounts();
+        /*List<ExpenseAccount> partyAccounts = expenseParty.getExpenseAccounts();
         for (ExpenseAccount ea : partyAccounts) {
             if (!ea.getMoneyIn().isEmpty() && (new BigDecimal(ea.getMoneyIn()).compareTo(new BigDecimal("0")) == 1)) {
                 ExpenseAccountTransaction eat = new ExpenseAccountTransaction();
@@ -87,7 +87,7 @@ public class ExpensePartyActionsMBean implements Serializable{
                 }
 
             }
-        }
+        }*/
     }
 
     public ExpenseParty getExpenseParty() {

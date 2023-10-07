@@ -2,7 +2,6 @@ package org.indusbc.mbean;
 
 import org.indusbc.ejb.ExpenseCategoryEjbLocal;
 import org.indusbc.ejb.ExpensePartyEjbLocal;
-import org.indusbc.ejb.exception.UserRegisteredAlreadyException;
 import org.indusbc.model.ExpenseAccount;
 import org.indusbc.model.ExpenseCategory;
 import org.indusbc.model.ExpenseParty;
@@ -13,6 +12,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,11 +43,10 @@ public class ExpensePartyRegisterMBean implements Serializable {
     private ExpenseParty expenseParty;
     
     private List<ExpenseCategory> expenseCategories;
-    private List<String> expenseCategoriesStr;
     private String[] partyExpenseCategories;
     private String memorableDateStr;
     private List<IdentityType> identityTypes;
-    private List<String> identityTypesStr;
+    
     @Inject
     private ExpenseCategoryEjbLocal expenseCategoryEjbLocal;
     @Inject
@@ -57,20 +56,11 @@ public class ExpensePartyRegisterMBean implements Serializable {
     
     @PostConstruct
     public void init(){
-        expenseCategories= new ArrayList<>();
-        expenseCategoriesStr = new ArrayList<>();
-        expenseCategories.addAll(expenseCategoryEjbLocal.getExpenseCategoriesForYear(FinancialYear.financialYear()));
-        for (ExpenseCategory ec: expenseCategories){
-            expenseCategoriesStr.add(ec.getExpenseCategory());
-        }
-        
-        LOGGER.info(String.format("Total ExpenseCategories for year %d are %d",FinancialYear.financialYear(), expenseCategories.size()));
         expenseParty= new ExpenseParty();
+        expenseCategories= new ArrayList<>();
+        expenseCategories.addAll(expenseCategoryEjbLocal.getExpenseCategoriesForYear(FinancialYear.financialYear()));
+        LOGGER.info(String.format("Total ExpenseCategories for year %d are %d",FinancialYear.financialYear(), expenseCategories.size()));
         identityTypes=identityTypeEjbLocal.findAll();
-        identityTypesStr=new ArrayList();
-        for (IdentityType idT : identityTypes){
-           identityTypesStr.add(idT.getIdentityType());
-        }
         LOGGER.info("ExpenseParty initialised.");
     }
     
@@ -108,19 +98,6 @@ public class ExpensePartyRegisterMBean implements Serializable {
             DateTimeFormatter formatter= DateTimeFormatter.ofPattern("dd/MM/yyyy");
             expenseParty.setMemorableDate(LocalDate.parse(memorableDateStr,formatter));
         }
-        //Expense Categories of the Party now
-        for (String expCat: partyExpenseCategories){
-            ExpenseAccount ea=new ExpenseAccount();
-            ea.setExpenseAccountHash(HashGenerator.generateHash(expCat));
-            ea.setName(expCat);
-            ExpenseCategory ec = expenseCategoryEjbLocal.findByNameAndYear(expCat, FinancialYear.financialYear());
-            ea.setExpenseCategoryId(ec.getId());
-            //Will attach the ExpenseParty Id in the EJB, when the Party ID becomes available.
-            if (expenseParty.getExpenseAccounts()==null){
-                expenseParty.setExpenseAccounts(new ArrayList());
-            }
-            expenseParty.getExpenseAccounts().add(ea);
-        }
         //Party Hash
         String partyHash=HashGenerator.generateHash(expenseParty.getName().concat(expenseParty.getEmail().concat(expenseParty.getIdentityType()).concat(expenseParty.getIdentityId())));
         expenseParty.setPartyHash(partyHash);
@@ -146,10 +123,9 @@ public class ExpensePartyRegisterMBean implements Serializable {
     
     private void submitExpenseParty(){
         try {
-            expenseParty = expensePartyEjbLocal.createExpenseParty(expenseParty);
+            List<String> expensePartyCategoriesList=Arrays.asList(partyExpenseCategories);
+            expenseParty = expensePartyEjbLocal.createExpenseParty(expenseParty,expensePartyCategoriesList );
             LOGGER.info(String.format("Expense Party created with ID: %d",expenseParty.getId()));
-        } catch (UserRegisteredAlreadyException ex) {
-            Logger.getLogger(ExpensePartyRegisterMBean.class.getName()).log(Level.SEVERE, null, ex);
         } catch (MessagingException ex) {
             Logger.getLogger(ExpensePartyRegisterMBean.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -183,15 +159,6 @@ public class ExpensePartyRegisterMBean implements Serializable {
     public void setPartyExpenseCategories(String[] partyExpenseCategories) {
         this.partyExpenseCategories = partyExpenseCategories;
     }
-
-    public List<String> getExpenseCategoriesStr() {
-        return expenseCategoriesStr;
-    }
-
-    public void setExpenseCategoriesStr(List<String> expenseCategoriesStr) {
-        this.expenseCategoriesStr = expenseCategoriesStr;
-    }
-
     public String getMemorableDateStr() {
         return memorableDateStr;
     }
@@ -208,11 +175,5 @@ public class ExpensePartyRegisterMBean implements Serializable {
         this.identityTypes = identityTypes;
     }
 
-    public List<String> getIdentityTypesStr() {
-        return identityTypesStr;
-    }
-
-    public void setIdentityTypesStr(List<String> identityTypesStr) {
-        this.identityTypesStr = identityTypesStr;
-    }
+    
 }

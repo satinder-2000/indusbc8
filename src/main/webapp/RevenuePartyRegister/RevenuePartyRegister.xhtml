@@ -1,7 +1,8 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-                template="/WEB-INF/templates/indusbcTemplate.xhtml">
+                template="/WEB-INF/templates/indusbcTemplate.xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:define name="content">
         <div class="container col-sm-8">
@@ -13,9 +14,82 @@
                         <h:outputLabel for="name" value="#{msg.name}"></h:outputLabel>
                     </div>
                     <div class="col-sm-6">
-                        <h:inputText value="#{revenuePartyRegisterMBean.revenueParty.name}"></h:inputText>
+                        <h:inputText id="name" value="#{revenuePartyRegisterMBean.revenueParty.name}" styleClass="form-control"></h:inputText>
+                        <h:message for="name" style="color: red"/>
                     </div>
                 </div>
+                <br/>
+                <div class="row form-group">
+                    <div class="col-sm-6">
+                        <h:outputLabel for="email" value="#{msg.email}"></h:outputLabel>
+                    </div>
+                    <div class="col-sm-6">
+                        <h:inputText id="email" value="#{revenuePartyRegisterMBean.revenueParty.email}"  styleClass="form-control"></h:inputText>
+                        <h:message for="email" style="color: red"/>
+                    </div>
+                </div>
+                <br/>
+                <div class="row form-group">
+                    <div class="col-sm-6">
+                        <h:outputLabel for="orgn" value="#{msg.organisation}"></h:outputLabel>
+                    </div>
+                    <div class="col-sm-6">
+                        <h:inputText id="orgn" value="#{revenuePartyRegisterMBean.revenueParty.organisation}"  styleClass="form-control"></h:inputText>
+                        <h:message for="orgn" style="color: red"/>
+                    </div>
+                </div>
+                <br/>
+                <div class="row form-group">
+                    <div class="col-sm-6">
+                        <h:outputLabel for="idType" value="#{msg.identityType}"></h:outputLabel>
+                    </div>
+                    <div class="col-sm-6">
+                        <h:selectOneMenu id="idType" value="#{revenuePartyRegisterMBean.revenueParty.identityType}"  styleClass="form-control">
+                            <f:selectItems value="#{revenuePartyRegisterMBean.identityTypes}" var="iT" itemLabel="#{iT.identityType}" itemValue="#{iT.identityType}"/>
+                        </h:selectOneMenu>
+                    </div>
+                </div>
+                <br/>
+                <div class="row form-group">
+                    <div class="col-sm-6">
+                        <h:outputLabel for="idId" value="#{msg.identityId}"></h:outputLabel>
+                    </div>
+                    <div class="col-sm-6">
+                        <h:inputText id="idId" value="#{revenuePartyRegisterMBean.revenueParty.identityId}"  styleClass="form-control"></h:inputText>
+                        <h:message for="idId" style="color: red"/>
+                    </div>
+                </div>
+                <br/>
+                <div class="row form-group">
+                    <div class="col-sm-6">
+                        <h:outputLabel for="accts" value="#{msg.selectAccounts}"></h:outputLabel>
+                    </div>
+                    <div class="col-sm-6">
+                        <h:selectManyMenu id="accts" value="#{revenuePartyRegisterMBean.partyRevenueCategories}" styleClass="form-control">
+                            <f:selectItems value="#{revenuePartyRegisterMBean.revenueCategories}" var="rC" itemLabel="#{rC.revenueCategory}" itemValue="#{rC.revenueCategory}"/>
+                        </h:selectManyMenu>
+                    </div>
+                </div>
+                <br/>
+                <div class="row form-group">
+                    <div class="col-sm-6">
+                        <h:outputLabel for="memDate" value="#{msg.memorableDate}"></h:outputLabel>
+                    </div>
+                    <div class="col-sm-6">
+                        <h:inputText id="memDate" value="#{revenuePartyRegisterMBean.memorableDateStr}" styleClass="form-control"/>
+                        <h:message for="memDate" style="color: red"/>
+                    </div>
+                </div>
+                <br/>
+                <div class="row form-group">
+                    <div class="col-sm-6">
+                    </div>
+                    <div class="col-sm-6">
+                        <h:commandButton id="continue" action="#{revenuePartyRegisterMBean.validateRevenueParty()}" value="#{msg.continue}" styleClass="btn btn-primary form-control">
+                        </h:commandButton>
+                    </div>
+                </div>
+                <br/>
                 
             </h:form>
         </div>
